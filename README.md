@@ -8,14 +8,33 @@ Each tenant configuration is stored as a values file and serves as input for Arg
 
 ## Flow
 ```
-TenantRequest → Crossplane Function → this repository → Argo CD → Kubernetes resources
+kubepave-tenant-requests (Git)
+        ↓
+Argo CD
+        ↓
+Kubernetes (TenantRequest)
+        ↓
+Crossplane Function
+  - Validate
+        ↓
+Approval Gate (manual or automated)
+        ↓
+Crossplane Function
+  - Generate tenant configuration
+  - Push to kubepave-tenants repository
+        ↓
+kubepave-tenants (Git)
+        ↓
+Argo CD
+        ↓
+Helm (rendering)
+        ↓
+Kubernetes (Tenant resources)
 ```
 
 ## Structure
 ```
-tenants/
-<tenant-name>/
-values.yaml
+tenants/<tenant-name>/tenant.yaml
 ```
 
 ## Notes
