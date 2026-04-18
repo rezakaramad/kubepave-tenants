@@ -1,6 +1,6 @@
 # kubepave-tenants
 
-⚠️ **This file is automatically managed by Crossplane. Do not edit manually.**
+⚠️ **This repository is managed by Crossplane. Do not edit manually.**
 
 This repository contains tenant configurations generated from approved TenantRequests.
 
