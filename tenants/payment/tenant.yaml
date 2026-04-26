@@ -1,0 +1,13 @@
+apiVersion: idp.rezakara.demo/v1alpha1
+kind: Tenant
+metadata:
+  name: payment
+spec:
+  argocd:
+    syncRepos:
+    - https://github.com/rezakaramad/kubepave.git
+  displayName: Payment
+  dnsName: pay
+  owner:
+    email: ""
+    team: payment
