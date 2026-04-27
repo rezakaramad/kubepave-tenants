@@ -12,6 +12,17 @@ spec:
     namespace: gitops-payment
   project: default
   source:
+    helm:
+      values: |
+        tenant:
+          argocd:
+            syncRepos:
+            - https://github.com/rezakaramad/kubepave.git
+          dnsName: pay
+          name: payment
+          owner:
+            email: ""
+            team: payment
     path: charts/gitops-tenant
     repoURL: https://github.com/rezakaramad/kubepave.git
     targetRevision: main
@@ -35,6 +46,15 @@ spec:
     namespace: payment
   project: default
   source:
+    helm:
+      values: |
+        environmentPrefix: wl
+        tenant:
+          dnsName: pay
+          name: payment
+          owner:
+            email: ""
+            team: payment
     path: charts/baseline-tenant
     repoURL: https://github.com/rezakaramad/kubepave.git
     targetRevision: main
