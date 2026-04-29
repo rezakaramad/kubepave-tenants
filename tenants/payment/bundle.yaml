@@ -1,0 +1,101 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: crossplane
+    platform.rezakara.demo/tenant: payment
+  name: gitops-payment
+  namespace: argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: gitops-payment
+  project: default
+  source:
+    helm:
+      values: |
+        azure:
+          freeTier: true
+        tenant:
+          argocd:
+            syncRepos:
+            - https://github.com/fluxdojo/platform-deploy-payment
+          dnsName: pay
+          name: payment
+          owner:
+            email: ""
+            team: payment
+          rbac:
+            roles:
+            - instances:
+              - cluster: minikube-workload
+                entraID:
+                  appRoleUUID: cf7ba269-9305-5cbd-85e5-e4f802b36025
+                  assignment:
+                    principalObjectIdSelector:
+                      enabled: false
+                    principalObjectIds: null
+                environmentPrefix: wl
+              name: admin
+              policies:
+              - actions:
+                - get
+                - update
+                - delete
+                - sync
+                - action/apps/Deployment/pause
+                - action/apps/Deployment/resume
+                - action/apps/Deployment/restart
+                - action/batch/CronJob/create-job
+                resource: applications
+              - actions:
+                - get
+                resource: logs
+            - instances:
+              - cluster: minikube-workload
+                entraID:
+                  appRoleUUID: 463d4095-7fb2-5f96-863e-4f7ec46c088d
+                  assignment:
+                    principalObjectIdSelector:
+                      enabled: false
+                    principalObjectIds: null
+                environmentPrefix: wl
+              name: viewer
+              policies:
+              - actions:
+                - get
+                resource: applications
+              - actions:
+                - get
+                resource: logs
+    path: charts/gitops-tenant
+    repoURL: https://github.com/rezakaramad/kubepave.git
+    targetRevision: main
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: crossplane
+    platform.rezakara.demo/prefix: wl
+    platform.rezakara.demo/tenant: payment
+  name: baseline-payment-wl
+  namespace: argocd
+spec:
+  destination:
+    name: minikube-workload
+    namespace: payment
+  project: default
+  source:
+    helm:
+      values: |
+        environmentPrefix: wl
+        tenant:
+          dnsName: pay
+          name: payment
+          owner:
+            email: ""
+            team: payment
+    path: charts/baseline-tenant
+    repoURL: https://github.com/rezakaramad/kubepave.git
+    targetRevision: main
