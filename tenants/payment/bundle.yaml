@@ -27,14 +27,11 @@ spec:
             entraID:
               appRoleUUID: cf7ba269-9305-5cbd-85e5-e4f802b36025
               assignment:
-                principalObjectId: fe4d32a7-133a-4404-bf30-d61e559f1a6f
+                principalObjectId: 2defd8f7-f248-4596-83a8-079eed89586b
             environmentPrefix: wl
             role: admin
           dnsName: pay
           name: payment
-          owner:
-            email: ""
-            team: payment
           roles:
           - name: admin
             policies:
@@ -76,9 +73,6 @@ spec:
         tenant:
           dnsName: pay
           name: payment
-          owner:
-            email: ""
-            team: payment
     path: charts/baseline-tenant
     repoURL: https://github.com/rezakaramad/kubepave.git
     targetRevision: main
