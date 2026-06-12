@@ -5,8 +5,6 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
   labels:
     app.kubernetes.io/managed-by: crossplane
-    nextinsight.rezakara.demo/agile-release-train: purchasing
-    nextinsight.rezakara.demo/agile-team: available-to-promise
     platform.rezakara.demo/tenant: payment
   name: gitops-payment
   namespace: argocd
@@ -59,8 +57,6 @@ kind: Application
 metadata:
   labels:
     app.kubernetes.io/managed-by: crossplane
-    nextinsight.rezakara.demo/agile-release-train: purchasing
-    nextinsight.rezakara.demo/agile-team: available-to-promise
     platform.rezakara.demo/prefix: wl
     platform.rezakara.demo/tenant: payment
   name: baseline-payment-wl
