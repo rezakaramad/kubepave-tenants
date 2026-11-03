@@ -1,45 +1,50 @@
 # kubepave-tenants
 
-⚠️ **This repository is managed by Crossplane. Do not edit manually.**
+Each tenant is stored as an `XTenant` manifest. The `tenants` Argo CD Application in the management cluster applies it, and Crossplane creates the tenant's Argo CD resources from it.
 
-This repository contains tenant configurations generated from approved TenantRequests.
+## Onboard a tenant
 
-Each tenant configuration is stored as a values file and serves as input for Argo CD and Helm to provision and manage tenant infrastructure.
+Add `local/<tenant-name>/tenant.yaml` and open a pull request. When it is merged, the `tenants` Argo CD Application in the management cluster applies the `XTenant`, and Crossplane creates the tenant's Argo CD resources from it.
 
 ## Flow
 ```
-kubepave-tenant-requests (Git)
-        ↓
-Argo CD
-        ↓
-Kubernetes (TenantRequest)
-        ↓
-Crossplane Function
-  - Validate
-        ↓
-Approval Gate (manual or automated)
-        ↓
-Crossplane Function
-  - Generate tenant configuration
-  - Push to kubepave-tenants repository
+Pull request (adds local/<tenant-name>/tenant.yaml)
         ↓
 kubepave-tenants (Git)
         ↓
-Argo CD
+Argo CD (`tenants` Application, management cluster)
         ↓
-Helm (rendering)
+Kubernetes (XTenant)
         ↓
-Kubernetes (Tenant resources)
+Crossplane (`xtenant-gotemplating` Composition)
+        ↓
+Argo CD (tenant Application + ApplicationSet)
 ```
 
 ## Structure
 ```
-tenants/<tenant-name>/tenant.yaml
+local/<tenant-name>/tenant.yaml
 ```
+
+Each `tenant.yaml` is an `XTenant`:
+
+```yaml
+apiVersion: idp.rezakara.demo/v1beta1
+kind: XTenant
+metadata:
+  name: <tenant-name>
+spec:
+  shortName: <short-dns-label>
+  crossplane:
+    compositionRevisionSelector:
+      matchLabels:
+        channel: stable
+```
+
+`metadata.name` must be 3-21 characters and a valid DNS label. `spec.shortName` is at most 10 characters.
 
 ## Notes
 
-- This repository is **managed by the platform (Crossplane)**
-- It is continuously updated to reflect the desired state
-- Do not modify files manually
+- Changes go through pull requests
 - Each tenant directory represents the desired state for that tenant
+- Pruning is on: removing a tenant directory deletes its `XTenant`, and with it the tenant's Argo CD resources and GitHub repo

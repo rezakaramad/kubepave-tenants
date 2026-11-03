@@ -1,0 +1,10 @@
+apiVersion: idp.rezakara.demo/v1beta1
+kind: XTenant
+metadata:
+  name: vineyard
+spec:
+  shortName: vny
+  crossplane:
+    compositionRevisionSelector:
+      matchLabels:
+        channel: stable
